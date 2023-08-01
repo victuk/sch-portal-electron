@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Admin</title>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="sidebar" id="sidebar">
+          
+        </div>
+        <div class="app-content">
+          <div class="app-content-header">
+            <div class="menu-bars">
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+            </div>
+            <h1 class="app-content-headerText">Recent Announcements</h1>
+            <button class="mode-switch" title="Switch Theme">
+              <svg
+                class="moon"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <defs></defs>
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+              </svg>
+            </button>
+            <button class="btn btn-danger" onclick="logOut()">Log out</button>
+          </div>
+  
+          <div id="announcements" class="my-2 pt-4">
+
+            <div id="global-setting" style="font-size: 20px;" class="p-2 my-4 card show-well">
+        
+            </div>
+
+            <div id="totalcounts" class="card p-2 my-4">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <style>
+      .show-well {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .s-summary {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      @media screen and (max-width: 600px) {
+        .show-well {
+          flex-direction: column;
+        }
+      }
+    </style>
+
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script>
+
+        const globalSetting = byID("global-setting");
+        const totalCounts = byID("totalcounts");
+
+        function loadApp() {
+            fetch(baseUrl + "admin/setting/term-and-year", {
+                method: "GET",
+                headers: {
+                    accesstoken
+                }
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                renderSettings(data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+            fetch(baseUrl + "admin/students-per-class", {
+                method: "GET",
+                headers: {
+                    accesstoken
+                }
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                totalCounts.innerHTML = `
+                  <h4 class="text-center">Student's Count Per Class</h4>
+                  <hr style="margin-top: 0;">
+                  <div class="s-summary">
+                    <div>
+                    JS1: ${data.summary.js1Count} students
+                  </div>
+                  <div>
+                    JS2: ${data.summary.js2Count} students
+                  </div>
+                  <div>
+                    JS3: ${data.summary.js3Count} students
+                  </div>
+                  <div>
+                    SS1: ${data.summary.ss1Count} students
+                  </div>
+                  <div>
+                    SS2: ${data.summary.ss2Count} students
+                  </div>
+                  <div>
+                    SS3: ${data.summary.ss3Count} students
+                  </div> 
+                  </div>
+                `;
+            })
+            .catch(error => {
+                console.log(error);
+                notify({
+                        message: "Something went wrong.",
+                        color: "danger",
+                        timeout: 3000
+                      });
+            });
+        }
+
+        loadApp();
+
+        function renderSettings(data) {
+            if( data.length == 0) {
+                globalSetting.innerHTML = `
+                    Current Term: <select id="globalTerm">
+                        <option value="select">-- Choose term --</option>
+                        <option value="first-term">First term</option>
+                        <option value="second-term">Second term</option>
+                        <option value="third-term">Third term</option>
+                    </select><br><br>
+                    Current Session: <select id="globalYear">
+                        <option value="select">-- Choose year --</option>
+                    <option value="${
+              new Date().getFullYear()
+            }/${new Date().getFullYear() + 1}">${new Date().getFullYear()}/${
+          new Date().getFullYear() + 1
+        }</option>
+            <option value="${
+              new Date().getFullYear() - 1
+            }/${new Date().getFullYear()}">${
+          new Date().getFullYear() - 1
+        }/${new Date().getFullYear()}</option>
+            <option value="${new Date().getFullYear() - 2}/${
+          new Date().getFullYear() - 1
+        }">${new Date().getFullYear() - 2}/${
+          new Date().getFullYear() - 1
+        }</option>
+            <option value="${new Date().getFullYear() - 3}/${
+          new Date().getFullYear() - 2
+        }">${new Date().getFullYear() - 3}/${
+          new Date().getFullYear() - 2
+        }</option>
+        </select><br><br>
+                    <button onclick="setglobal()" class="btn btn-primary">Set Global Property</button>
+                `;
+            } else {
+                globalSetting.innerHTML = `
+                    <div>Current Term: ${data[0].currentTerm.split("-").map(word => word[0].toUpperCase() + word.slice(1)).join(" ")}</div>
+                    <div>Current Session: ${data[0].currentYear}</div>
+                    <button onclick="editglobal()" class="btn btn-primary">Edit</button>
+                `;
+            }
+        }
+
+        function setglobal() {
+            const globalTerm = document.getElementById("globalTerm");
+            const globalYear = document.getElementById("globalYear");
+
+            if(globalTerm.value == "select" || globalTerm.value == "select") {
+                alert("Your inputs are not complete");
+            } else {
+                fetch(baseUrl + "admin/setting/term-and-year", {
+                method: "POST",
+                headers: {
+                    accesstoken,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    currentTerm: globalTerm.value,
+                    currentYear: globalYear.value
+                })
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                loadApp();
+            })
+            .catch(error => {
+                console.log(error);
+                notify({
+                        message: "Something went wrong.",
+                        color: "danger",
+                        timeout: 3000
+                      });
+            });
+            }
+        }
+
+        function editglobal() {
+            fetch(baseUrl + "admin/setting/term-and-year", {
+                method: "GET",
+                headers: {
+                    accesstoken
+                }
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                globalSetting.innerHTML = `
+                    <div style="display:flex; align-items: center;">Current Term: <select id="${data[0]._id}-globalTerm" class="p-2 ml-1" border-radius: 5px;" value="${data[0].currentTerm}">
+                        <option value="select">-- Choose term --</option>
+                        <option value="first-term">First term</option>
+                        <option value="second-term">Second term</option>
+                        <option value="third-term">Third term</option>
+                        </select><br><br></div>
+                    <div style="display:flex; align-items: center;">Current Session: <select id="${data[0]._id}-globalYear" class="p-2 ml-1" border-radius: 5px;" value="${data[0].currentYear}">
+                        <option value="select">-- Choose year --</option>
+                    <option value="${
+              new Date().getFullYear()
+            }/${new Date().getFullYear() + 1}">${new Date().getFullYear()}/${
+          new Date().getFullYear() + 1
+        }</option>
+            <option value="${
+              new Date().getFullYear() - 1
+            }/${new Date().getFullYear()}">${
+          new Date().getFullYear() - 1
+        }/${new Date().getFullYear()}</option>
+            <option value="${new Date().getFullYear() - 2}/${
+          new Date().getFullYear() - 1
+        }">${new Date().getFullYear() - 2}/${
+          new Date().getFullYear() - 1
+        }</option>
+            <option value="${new Date().getFullYear() - 3}/${
+          new Date().getFullYear() - 2
+        }">${new Date().getFullYear() - 3}/${
+          new Date().getFullYear() - 2
+        }</option>
+        </select><br><br></div>
+                    <button onclick="uploadGlobal('${data[0]._id}')" class="btn btn-primary">Publish</button>
+                `;
+            })
+            .catch(error => {
+                console.log(error);
+                notify({
+                        message: "Something went wrong.",
+                        color: "danger",
+                        timeout: 3000
+                      });
+            });
+        }
+
+        function uploadGlobal(id) {
+            const termUpdated = document.getElementById(`${id}-globalTerm`);
+            const yearUpdated = document.getElementById(`${id}-globalYear`);
+
+            if(termUpdated.value == "select" || yearUpdated.value == "select") {
+                notify({
+                        message: "Your inputs are not complete",
+                        color: "danger",
+                        timeout: 3000
+                      });
+            } else {
+                fetch(baseUrl + "admin/setting/term-and-year/" + id, {
+                method: "PUT",
+                headers: {
+                    accesstoken,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    currentTerm: termUpdated.value,
+                    currentYear: yearUpdated.value
+                })
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                notify({
+                        message: "Update Successful.",
+                        color: "success",
+                        timeout: 3000
+                      });
+                loadApp();
+            })
+            .catch(error => {
+                console.log(error);
+                notify({
+                        message: "Something went wrong.",
+                        color: "danger",
+                        timeout: 3000
+                      });
+            });
+            }
+        }
+
+    </script>
+    <script src="./res/profile.js"></script>
+</body>
+</html>

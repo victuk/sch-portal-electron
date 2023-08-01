@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Admin</title>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="sidebar" id="sidebar">
+          
+        </div>
+        <div class="app-content">
+          <div class="app-content-header">
+            <div class="menu-bars">
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+            </div>
+            <h1 class="app-content-headerText">Recent Announcements</h1>
+            <button class="mode-switch" title="Switch Theme">
+              <svg
+                class="moon"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <defs></defs>
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+              </svg>
+            </button>
+            <button class="btn btn-danger" onclick="logOut()">Log out</button>
+          </div>
+  
+          <div id="announcements" class="my-2 pt-4">
+
+            <div id="receipts">
+
+            </div>
+                
+          </div>
+        </div>
+      </div>
+
+    <style>
+      .show-well {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .s-summary {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      @media screen and (max-width: 600px) {
+        .show-well {
+          flex-direction: column;
+        }
+      }
+    </style>
+
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script src="../../scripts/baseUrl.js"></script>
+    <script>
+
+        const receiptsDiv = byID("receipts");
+        const studentID = location.search.slice(1).split("=")[1];
+
+        (async function loadReceipts() {
+
+            const receipts = await fetch(`${baseUrl}payment/receipt-by-id/${studentID}`, {
+                    method: "GET",
+                    headers: {
+                        accesstoken
+                    }
+                });
+
+            const receiptsList = await receipts.json();
+
+            console.log(receiptsList.receipt);
+
+            if(receipts.status == 200) {
+                for (let r of receiptsList.receipt) {
+                    receiptsDiv.innerHTML += `
+                    <div style="padding: 20px;">
+                        <div>Name: ${r.metaDetails.firstName} ${r.metaDetails.surName}</div>
+                        <div>Term: ${r.term}</div>
+                        <div>Year: ${r.year}</div>
+                        <div>Class: ${r.studentClass}</div>
+                        <div>Amount: ${r.amount}</div>
+                        <div>Paystack Reference ID: ${r.referenceID}</div>
+                        <div>
+                    `;
+                }
+            }
+        })();
+    </script>
+    <script src="../res/profile.js"></script>
+</body>
+</html>

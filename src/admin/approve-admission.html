@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="sidebar" id="sidebar">
+          
+        </div>
+        <div class="app-content">
+          <div class="app-content-header">
+            <div class="menu-bars">
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+            </div>
+            <h1 class="app-content-headerText">Recent Announcements</h1>
+            <button class="mode-switch" title="Switch Theme">
+              <svg
+                class="moon"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <defs></defs>
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+              </svg>
+            </button>
+            <button class="btn btn-danger" onclick="logOut()">Log out</button>
+          </div>
+  
+          <div id="announcements" class="my-2 pt-4">
+
+            <div id="new-students">
+
+            </div>
+        
+          </div>
+        </div>
+      </div>
+
+    
+    
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script>
+
+        function capitalizeString(str) {
+            return str[0].toUpperCase() + str.slice(1);
+        }
+
+        const newStudents = document.getElementById("new-students");
+
+        function showNewStudents() {
+            fetch(baseUrl + "admin/newly-admitted-students", {
+                method: "GET",
+                headers: {
+                    accesstoken
+                }
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                if(response.status == 200) {
+                    newStudents.innerHTML = "Loading...";
+                    renderStudents(data);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
+
+        showNewStudents();
+
+        function renderStudents(students) {
+            newStudents.innerHTML = "";
+            if(students.length == 0) {
+                newStudents.innerHTML = "No New Students.";
+            } else {
+                for (let student of students) {
+                newStudents.innerHTML += `
+                    <div class="row p-2 my-2" style="align-items: center; font-size: 20px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 5px; margin-right: 0; margin-left: 0;">
+                        <div class="col col-3">${capitalizeString(student.surName)}, ${capitalizeString(student.firstName)} ${capitalizeString(student.otherNames)}</div>
+                        <div class="col col-3">${student.email}</div>
+                        <div class="col col-3">${student.studentClass.toUpperCase()}</div>
+                        <div class="col col-3">
+                            <button class="btn btn-primary" onclick="approveAdmission('${student._id}')">Approve</button>
+                            <button class="btn btn-primary" onclick="viewStudent('${student._id}')">View</button>
+                            <button class="btn btn-danger" onclick="deleteAdmission('${student._id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }
+            }
+        }
+
+        function approveAdmission(studentID) {
+            fetch(baseUrl + "admin/approve-admission/" + studentID, {
+                method: "POST",
+                headers: {
+                    accesstoken
+                }
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                console.log(data.message);
+                showNewStudents();
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
+
+        function deleteAdmission(studentID) {
+            fetch(baseUrl + "admin/delete-admission/" + studentID, {
+                method: "DELETE",
+                headers: {
+                    accesstoken
+                }
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                console.log(data.message);
+                showNewStudents();
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
+
+        function viewStudent(id) {
+            location.assign("/admin/view-student.html?id=" + id);
+        }
+
+    </script>
+    <script src="./res/profile.js"></script>
+</body>
+</html>

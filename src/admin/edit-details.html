@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Admin</title>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="sidebar" id="sidebar">
+          
+        </div>
+        <div class="app-content">
+          <div class="app-content-header">
+            <div class="menu-bars">
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+            </div>
+            <h1 class="app-content-headerText">Recent Announcements</h1>
+            <button class="mode-switch" title="Switch Theme">
+              <svg
+                class="moon"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <defs></defs>
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+              </svg>
+            </button>
+            <button class="btn btn-danger" onclick="logOut()">Log out</button>
+          </div>
+  
+          <div id="announcements" class="my-2 pt-4">
+
+                First name: <input type="text" id="firstName"><br></br>
+                Surname: <input type="text" id="surName"><br></br>
+                other Names: <input type="text" id="otherNames"><br></br>
+                Class:
+                    <select name="class" id="class">
+                      <option value="select">-- Choose class --</option>
+                      <option value="js1">JS 1</option>
+                      <option value="js2">JS 2</option>
+                      <option value="js3">JS 3</option>
+                      <option value="ss1">SS 1</option>
+                      <option value="ss2">SS 2</option>
+                      <option value="ss3">SS 3</option>
+                    </select><br></br>
+            
+                    Gender:
+                    <select name="gender" id="gender">
+                      <option value="select">-- Choose Gender --</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select><br></br>
+            
+                    Category:
+                    <select name="category" id="category">
+                      <option value="select">-- Choose Category --</option>
+                      <option value="general">None</option>
+                      <option value="science">Science</option>
+                      <option value="arts">Arts</option>
+                    </select><br></br>
+            
+                Email: <input type="text" id="email"><br></br>
+                State Of origin: <input type="text" id="state-of-origin"><br></br>
+                LGA of origin: <input type="text" id="lga-of-origin"><br></br>
+                Parent's name: <input type="text" id="parents-name"><br></br>
+                Parent's email: <input type="text" id="parents-email"><br></br>
+                Parent's Phone Number: <input type="text" id="parents-pnone-number"><br></br>
+            
+                <button class="btn btn-success" id="save-button">Save</button>
+                
+                
+          </div>
+        </div>
+      </div>
+
+    <style>
+      .show-well {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .s-summary {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      @media screen and (max-width: 600px) {
+        .show-well {
+          flex-direction: column;
+        }
+      }
+    </style>
+
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script src="../../scripts/baseUrl.js"></script>
+                <script>
+            
+                    const studentID = location.search.slice(1).split("=")[1];
+            
+                    const firstName = byID("firstName");
+                    const surName = byID("surName");
+                    const otherNames = byID("otherNames");
+                    const studentClass = byID("class");
+                    const email = byID("email");
+                    const gender = byID("gender");
+                    const category = byID("category");
+                    const stateOfOrigin = byID("state-of-origin");
+                    const lgaOfOrigin = byID("lga-of-origin");
+                    const pName = byID("parents-name");
+                    const pEmail = byID("parents-email");
+                    const pNumber = byID("parents-pnone-number");
+                    const saveButton = byID("save-button");
+            
+                    
+                        function getDetails() {
+                            fetch(baseUrl + "admin/student/" + studentID, {
+                                method: "GET",
+                                headers: {
+                                    accesstoken
+                                }
+                            })
+                            .then(async (response) => {
+                                const data = await response.json();
+                                const res = data.studentDetails;
+                                if(response.status == 200) {
+                                    console.log(res);
+            
+                                    firstName.value = res.firstName;
+                                    surName.value = res.surName;
+                                    otherNames.value = res.otherNames;
+                                    studentClass.value = res.studentClass;
+                                    gender.value = res.gender;
+                                    category.value = res.category;
+                                    email.value = res.email;
+                                    stateOfOrigin.value = res.stateOfOrigin;
+                                    lgaOfOrigin.value = res.localGovernmentOfOrigin;
+                                    pName.value = res.parentName;
+                                    pEmail.value = res.parentEmail;
+                                    pNumber.value = res.parentPhone;
+            
+                                }
+                            })
+                            .catch();
+                        }
+            
+                        getDetails();
+            
+            
+                    saveButton.addEventListener("click", function () {
+                        fetch(baseUrl + "admin/student/" + studentID, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                                accesstoken
+                            },
+                            body: JSON.stringify({
+                                firstName: firstName.value,
+                                surName: surName.value,
+                                otherNames: otherNames.value,
+                                studentClass: studentClass.value,
+                                gender: gender.value,
+                                parentName: pName.value,
+                                parentEmail: pEmail.value,
+                                parentPhone: pNumber.value,
+                                studentClass: studentClass.value,
+                                stateOfOrigin: stateOfOrigin.value,
+                                localGovernmentOfOrigin: lgaOfOrigin.value,
+                                category: category.value
+                            })
+                        })
+                        .then(async (response) => {
+                            if (response.status) {
+                                notify({
+                                    message: "Update Successful",
+                                    color: "success",
+                                    timeout: 3000
+                                });
+                                getDetails();
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                    });
+                </script>
+    <script src="../res/profile.js"></script>
+</body>
+</html>

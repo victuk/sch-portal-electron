@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Admin</title>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="sidebar" id="sidebar"></div>
+      <div class="app-content">
+        <div class="app-content-header">
+          <div class="menu-bars">
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+          </div>
+          <h1 class="app-content-headerText">Recent Announcements</h1>
+          <button class="mode-switch" title="Switch Theme">
+            <svg
+              class="moon"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <defs></defs>
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-danger" onclick="logOut()">Log out</button>
+        </div>
+
+        <div id="announcements" class="my-2 pt-4">
+          <div class="my-4">
+            Search Email or Registration Number:
+            <input type="text" class="p-1" id="searchByEmail" />
+            Class:
+            <select name="searchByClass" id="classChoice" class="p-2" id="">
+              <option value="js1">JS1</option>
+              <option value="js2">JS2</option>
+              <option value="js3">JS3</option>
+              <option value="ss1">SS1</option>
+              <option value="ss2">SS2</option>
+              <option value="ss3">SS3</option>
+              <!-- <option value="all">All Receipts</option> -->
+            </select>
+            <button class="btn btn-primary" id="searchByEmailButton">
+              Search
+            </button>
+          </div>
+
+          <div class="my-4">
+            Search By Class:
+            <select name="searchByClass" id="searchByClass" class="p-2" id="">
+              <option value="js1">JS1</option>
+              <option value="js2">JS2</option>
+              <option value="js3">JS3</option>
+              <option value="ss1">SS1</option>
+              <option value="ss2">SS2</option>
+              <option value="ss3">SS3</option>
+            </select>
+
+            <button class="btn btn-primary" id="searchByClassButton">
+              Load
+            </button>
+          </div>
+          <div id="receipts"></div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .show-well {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      #receipts {
+        display: flex;
+        flex-direction: column;
+        align-content: space-around;
+      }
+
+      .pic {
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        border: 1px solid blue;
+      }
+
+      .s-summary {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      @media screen and (max-width: 600px) {
+        .show-well {
+          flex-direction: column;
+        }
+      }
+    </style>
+
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script>
+      const searchByEmail = byID("searchByEmail");
+      const classChoice = byID("classChoice");
+      const searchByEmailButton = byID("searchByEmailButton");
+      const searchByClass = byID("searchByClass");
+      const searchByClassButton = byID("searchByClassButton");
+      const receipts = byID("receipts");
+
+      // let result;
+
+      function capitalizeString(str) {
+            return str[0].toUpperCase() + str.slice(1);
+        }
+
+      searchByEmailButton.addEventListener("click", function () {
+        fetch(
+          baseUrl +
+            "admin/student-feedrive/" +
+            searchByEmail.value +
+            "/" +
+            classChoice.value,
+          {
+            method: "GET",
+            headers: {
+              accesstoken,
+            },
+          }
+        )
+          .then(async (response) => {
+            const data = await response.json();
+            // console.log(data);
+            // result = data;
+            renderSettings(data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+
+      searchByClassButton.addEventListener("click", function () {
+        fetch(baseUrl + "admin/class-feedrive/" + searchByClass.value, {
+          method: "GET",
+          headers: {
+            accesstoken,
+          },
+        })
+          .then(async (response) => {
+            const data = await response.json();
+            // console.log(data);
+            // result = data;
+            renderSettings(data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+
+      function renderSettings(data) {
+        receipts.innerHTML = "";
+        if (Array.isArray(data.students)) {
+          if (data.students.length != 0) {
+            for (let student of data.students) {
+              let sDetail = student.studentDetails;
+              let sPayment = student.paymentDetails;
+              console.log(sDetail);
+              receipts.innerHTML += `
+            <div class="my-2 p-2" style="border: 1px solid grey; border-radius: 5px; display: flex; align-items: center; gap: 20px;">
+              <img style="background-image: url('${
+                sDetail.passportPicture
+              }');" class="pic">
+              <div>${capitalizeString(sDetail.surName)} ${capitalizeString(sDetail.firstName)} ${
+                capitalizeString(sDetail.otherNames)
+              }</div>
+              <div>${sPayment.amount ? "N" + sPayment.amount : "N0"}, ${
+                student.hasPaid ? "Paid" : "Not Paid"
+              } ${sPayment.year ? "(" + sPayment.year + " - " + sPayment.term + ")" : ""} ${
+                sPayment.payDate
+                  ? moment(sPayment.payDate).format("Do MMMM, YYYY")
+                  : ""
+              } ${sDetail.admitted ? "Admitted" : "Not Admitted"}</div>
+              </div>
+              `;
+            }
+          } else {
+            receipts.innerHTML = `<div>No Record Found</div>`;
+          }
+        } else {
+          console.log(data);
+          receipts.innerHTML = `
+            <div class="my-2 p-2" style="border: 1px solid grey; border-radius: 5px; display: flex; align-items: center; gap: 20px;">
+              <img style="background-image: url('${
+                data.studentDetails.passportPicture
+              }');" class="pic">
+              <div>${capitalizeString(data.studentDetails.surName)}, ${
+                capitalizeString(data.studentDetails.firstName)
+          } ${capitalizeString(data.studentDetails.otherNames)}</div>
+              <div>${data.paymentDetails.amount ? "N" + data.paymentDetails.amount : "N0"}, ${
+            data.hasPaid ? "Paid" : "Not Paid"
+          } ${data.paymentDetails.year ? "(" + data.paymentDetails.year + " - " + data.paymentDetails.term + ")" : ""} ${
+            data.paymentDetails.payDate
+              ? moment(data.paymentDetails.payDate).format("Do MMMM, YYYY")
+              : ""
+          } ${data.studentDetails.admitted ? "Admitted" : "Not Admitted"}</div>
+              </div>
+            `;
+        }
+      }
+    </script>
+    <script src="./res/profile.js"></script>
+  </body>
+</html>

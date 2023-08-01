@@ -1,0 +1,32 @@
+{
+  "name": "posapp",
+  "productName": "posapp",
+  "version": "1.0.0",
+  "description": "My Electron application description",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\""
+  },
+  "keywords": [],
+  "author": {
+    "name": "Victor",
+    "email": "ukokjnr@gmail.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "electron-compile": "^6.4.4",
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "^8.2.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "handlebars": "^4.7.7",
+    "html-pdf": "^3.0.1",
+    "axios": "^0.27.2",
+    "pdf-creator-node": "^2.3.5",
+    "electron": "^23.2.0",
+    "electron-compilers": "^5.9.0"
+  }
+}

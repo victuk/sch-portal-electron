@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Admin</title>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="sidebar" id="sidebar">
+          
+        </div>
+        <div class="app-content">
+          <div class="app-content-header">
+            <div class="menu-bars">
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+            </div>
+            <h1 class="app-content-headerText">Recent Announcements</h1>
+            <button class="mode-switch" title="Switch Theme">
+              <svg
+                class="moon"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <defs></defs>
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+              </svg>
+            </button>
+            <button class="btn btn-danger" onclick="logOut()">Log out</button>
+          </div>
+
+          
+          <div id="announcements" class="my-2 pt-4">
+              
+            <div class="my-2">
+                <a href="./registerteacher.html" class="btn btn-primary">Add New Teacher</a>
+            </div>
+
+            <div class="form-inline my-2">
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="input" class="form-control" id="search-value" placeholder="Type teacher name or email">
+                  </div>
+                  <button type="submit" class="btn btn-primary mb-2">Search</button>
+            </div>
+
+            <div id="all-teachers" class="p-2 my-4 card">
+                <div class="text-center">
+                    <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                </div>
+            </div>
+        
+          </div>
+        </div>
+      </div>
+
+    <style>
+      .show-well {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .s-summary {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .render-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      @media screen and (max-width: 600px) {
+        .show-well {
+          flex-direction: column;
+        }
+      }
+    </style>
+
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script>
+
+        const allTeachers = byID("all-teachers");
+
+        function capitalizeString(str) {
+        return str[0].toUpperCase() + str.slice(1);
+      }
+
+        function loadApp() {
+            fetch(baseUrl + "admin/every-teacher", {
+                method: "GET",
+                headers: {
+                    accesstoken
+                }
+            })
+            .then(async (response) => {
+                const data = await response.json();
+
+                console.log(data);
+
+                allTeachers.innerHTML = `
+                <h4 class="text-center">Teacher's List</h4>
+                <div class="render-list">
+                    <div>Name</div>
+                    <div>Email</div>
+                    <div>Action</div>
+                </div>
+                <hr style="margin-top: 0;">
+                `;
+                
+                for(let teacher of data.searchResult) {
+                    allTeachers.innerHTML += `
+                        <div class="render-list">
+                            <div class="my-2">${capitalizeString(teacher.surName)}, ${capitalizeString(teacher.firstName)}</div>
+                            <div class="my-2">${teacher.email}</div>
+                            <div class="my-2"><button class="btn btn-primary" onclick="viewTeacher('${teacher._id}')">View</button> <button class="btn btn-primary" onclick="editTeacher('${teacher._id}')">Edit</button> </div>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
+
+        loadApp();
+
+        function viewTeacher(id) {
+            location.assign("/admin/view-teacher.html?id=" + id);
+        }
+
+        function editTeacher(id) {
+            location.assign("/admin/edit-teacher.html?id=" + id);
+        }
+    </script>
+    <script src="./res/profile.js"></script>
+</body>
+</html>

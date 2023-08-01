@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="sidebar" id="sidebar"></div>
+      <div class="app-content" style="padding-right: 0;">
+        <div class="app-content-header">
+          <div class="menu-bars">
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+          </div>
+          <h1 class="app-content-headerText">Recent Announcements</h1>
+          <button class="mode-switch" title="Switch Theme">
+            <svg
+              class="moon"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <defs></defs>
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-danger" onclick="logOut()">Log out</button>
+        </div>
+
+        <div id="announcements" class="pt-4 render-well">
+          <div style="overflow: auto; width: 100%;" class="p-4">
+            Post An Announcement
+            <form>
+              Title: <input type="text" class="form-control" id="announcement-title" /> <br /><br />
+              Announcement: <br />
+              <textarea
+                name=""
+                id="announcement"
+                cols="10"
+                rows="5"
+                class="form-control"
+              ></textarea>
+              <br /><br />
+
+              Audience Type:
+              <select name="" id="audience-type">
+                <option value="everyone">Everyone</option>
+                <option value="students">Every Student</option>
+                <option value="teachers">Every Teacher</option>
+                <option value="parents">Every Parent</option>
+              </select>
+              <br /><br />
+
+              <button id="send" class="btn btn-success">Send Announcement</button>
+            </form>
+          </div>
+
+          <div style="overflow: auto; width: 100%;" class="p-4">
+            <h3 style="padding-left: 10px;">All Announcements</h3>
+            <div id="all-announcements"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .render-well {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        height: 90vh;
+        /* position: absolute; */
+        overflow: hidden;
+        width: 100%;
+      }
+    </style>
+
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script>
+      // const byID = (id) => document.getElementById(id);
+
+      const announcementTitle = byID("announcement-title");
+      const announcement = byID("announcement");
+      const audienceType = byID("audience-type");
+      const sendAnnouncement = byID("send");
+
+      let allAnnouncements = byID("all-announcements");
+
+      function renderAnnouncements(data) {
+        allAnnouncements.innerHTML = "";
+              for (let ann of data.allAnnouncement.reverse()) {
+                allAnnouncements.innerHTML += `
+                <div style="margin: 20px 10px;" class="card p-2">
+                  <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 0, 0, 0.125); padding-bottom: 5px; margin-bottom: 5px;" class="pb-2 my-2">
+                    <div style="font-weight: bold; font-size: 20px;">${ann.announcementTitle}</div>
+                    <div class="bg-primary px-2 my-1 text-white" style="font-size: 15px; border-radius: 40px; width: fit-content;">${ann.audienceType}</div>
+                    </div>
+                    <div style="font-size: 25px;" class="my-3">${ann.announcement} ${ann.createdAt == ann.updatedAt ? "" : "- (edited)"}</div>
+                    <div style="font-size: 10px; font-weight: bold;" class="my-2">Post Date: ${moment(ann.createDate).format('Do MMMM, YYYY')}</div>
+                    <button class="btn btn-primary mb-2" onclick="editAnnouncement('${ann._id}')">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteAnnouncement('${ann._id}')">Delete</button>
+                </div>
+                `;
+              }
+      }
+
+      (function fetchAllAnnouncements() {
+        fetch(baseUrl + "admin/announcements", {
+          method: "GET",
+          headers: {
+            accesstoken,
+            "Content-Type": "application/json",
+          },
+        })
+          .then(async (response) => {
+            const data = await response.json();
+            allAnnouncements.innerHTML = "Loading...";
+            if (response.status == 200) {
+              renderAnnouncements(data);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      })();
+
+      sendAnnouncement.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        fetch(baseUrl + "admin/announcement", {
+          method: "POST",
+          headers: {
+            accesstoken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: announcementTitle.value,
+            announcement: announcement.value,
+            audienceType: audienceType.value,
+          }),
+        })
+          .then(async (response) => {
+            const data = await response.json();
+
+            announcement.value = "";
+            announcementTitle.value = "";
+
+            if (response.status == 200) {
+              fetch(baseUrl + "admin/announcements", {
+                method: "GET",
+                headers: {
+                  accesstoken,
+                  "Content-Type": "application/json",
+                },
+              })
+                .then(async (response) => {
+                  const data = await response.json();
+
+                  allAnnouncements.innerHTML = "Loading...";
+
+                  if (response.status == 200) {
+                    renderAnnouncements(data);
+                  }
+                })
+                .catch((e) => {
+                  console.log(e);
+                  notify({
+                    message: "Something went wrong.",
+                    color: "danger",
+                    timeout: 3000
+                  });
+                });
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+            notify({
+              message: "Something went wrong.",
+              color: "danger",
+              timeout: 3000
+            });
+          });
+      });
+
+      function editAnnouncement(id) {
+        location.assign("/admin/edit-announcement.html?id=" + id);
+      }
+
+      function deleteAnnouncement(id) {
+        fetch(baseUrl + "admin/announcement/" + id, {
+          method: "DELETE",
+          headers: {
+            accesstoken,
+          },
+        })
+          .then(async (response) => {
+            const data = await response.json();
+
+            if (response.status == 200) {
+
+              fetch(baseUrl + "admin/announcements", {
+                method: "GET",
+                headers: {
+                  accesstoken,
+                  "Content-Type": "application/json",
+                },
+              })
+                .then(async (response) => {
+                  const data = await response.json();
+                  allAnnouncements.innerHTML = "Loading...";
+                  if (response.status == 200) {
+                    notify({
+                        message: "Delete Successful",
+                        color: "success",
+                        timeout: 5000
+                      });
+                    renderAnnouncements(data);
+                  }
+                })
+                .catch((e) => {
+                  console.log(e);
+                  notify({
+                    message: "Something went wrong.",
+                    color: "danger",
+                    timeout: 3000
+                  });
+                });
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+            notify({
+              message: "Something went wrong.",
+              color: "danger",
+              timeout: 3000
+            });
+          });
+      }
+    </script>
+    <script src="./res/profile.js"></script>
+  </body>
+</html>

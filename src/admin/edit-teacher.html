@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Admin</title>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="sidebar" id="sidebar"></div>
+      <div class="app-content">
+        <div class="app-content-header">
+          <div class="menu-bars">
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+          </div>
+          <h1 class="app-content-headerText">Recent Announcements</h1>
+          <button class="mode-switch" title="Switch Theme">
+            <svg
+              class="moon"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <defs></defs>
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-danger" onclick="logOut()">Log out</button>
+        </div>
+
+        <div id="admin" class="my-2 pt-4 show-well">
+          
+        </div>
+
+        <div id="change-subject">
+
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .show-well {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .s-summary {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      @media screen and (max-width: 600px) {
+        .show-well {
+          flex-direction: column;
+        }
+      }
+    </style>
+
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script>
+
+      const adminDiv = byID("admin");
+      const changeSub = byID("change-subject");
+
+      const teacherID = location.search.slice(0).split("=")[1];
+
+      let gottenData;
+
+      function capitalizeString(str) {
+        return str[0].toUpperCase() + str.slice(1);
+      }
+
+      function loadApp() {
+        fetch(baseUrl + "admin/teacher/" + teacherID, {
+          method: "GET",
+          headers: {
+            accesstoken,
+          },
+        })
+          .then(async (response) => {
+            const data = await response.json();
+            console.log(data);
+            gottenData = data;
+            renderSettings();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+
+      loadApp();
+
+      function renderSettings() {
+        const teacher = gottenData.teacherDetails;
+        adminDiv.innerHTML = `
+        <div>
+          <div class="my-4">Surname: <input type="text" value="${capitalizeString(teacher.surName)}" class="form-control"></div>
+          <div class="my-4">Other Names: <input type="text" value="${capitalizeString(teacher.otherNames)}" class="form-control"></div>
+          <div class="my-4">Gender:
+            <select name="gender" class="form-control">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          <div class="my-4">Email: <input type="text" value="${teacher.email}" class="form-control"></div>
+          <div class="my-4">State of Origin: <input type="text" value="${teacher.stateOfOrigin}" class="form-control"></div>
+          <div class="my-4">L.G.A of Origin: <input type="text" value="${capitalizeString(teacher.localGovernmentOfOrigin)}" class="form-control"></div>
+          <div class="my-4">Class Teacher of: <input type="text" value="${capitalizeString(teacher.classTeacherOf)}" class="form-control"></div>
+          
+          <div class="mt-4">
+            <button class="btn btn-primary" onclick="saveTeacher('${teacher._id}')">Save</button>
+          </div>
+          </div>
+          </div>
+          <div style="height: 400px; width: 400px;">
+            <img style="background-color: url("${teacher.passportPicture}"); background-size: cover; width: 100%; height: 100%; border-radius: 50%;" alt="Profile Pic for ${capitalizeString(teacher.surName)}, ${capitalizeString(teacher.otherNames)}">
+          </div>
+        `;
+        loadSubjects();
+      }
+
+      function loadSubjects() {
+        const teacher = gottenData.teacherDetails;
+        changeSub.innerHTML = `
+        <div class="my-4">
+            Subject and Classes Assigned to: <br>
+            ${teacher.subjectsClass.map(s => {
+              return `<div><button onclick="deleteSubject('${s._id}')" class="btn btn-danger mr-2 my-2">Delete</button>${s.subjectName} - ${capitalizeString(s.subjectClass)}</div>`; 
+            }).join("")}  
+          </div>
+
+          <div>
+          Add new Subject
+          <div class="my-2">
+            Subject Name: <input type="text" id="newSubjectName">  
+          </div>
+
+          <div class="my-2">
+            Subject Class: <select name="newSubjectClass" class="nSubjectClass p-2">
+              <option value="sj1">JS 1</option>
+              <option value="sj2">JS 2</option>
+              <option value="sj3">JS 3</option>
+              <option value="ss1">SS 1</option>
+              <option value="ss2">SS 2</option>
+              <option value="ss3">SS 3</option>
+            </select>
+          </div>
+          <div>
+            <button class="btn btn-success" onclick="addNewSubject()">Add and Save Subject</button>  
+          </div>
+          </div>
+        `;
+      }
+
+      function addNewSubject() {
+        let newSubjectName = byID("newSubjectName");
+        let nSubjectClass = byID("nSubjectClass");
+
+        fetch(baseUrl + "admin/teacher/add-subject/", {
+          method: "PUT",
+          headers: {
+            accesstoken,
+          },
+          body:JSON.stringify({
+            subjectName: newSubjectName.value,
+            subjectCode: newSubjectName.value.toLowerCase().split(" ").join("-"),
+            subjectClass: nSubjectClass.value
+          })
+        })
+          .then(async (response) => {
+            const data = await response.json();
+            console.log(data);
+            gottenData = data;
+            renderSettings();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+
+      function editTeacher(id) {
+            location.assign("/admin/edit-teacher.html?id=" + id);
+        }
+
+        function deleteSubject(subjectID) {
+          fetch(baseUrl + "admin/teacher/remove-subject/" + subject, {
+          method: "DELETE",
+          headers: {
+            accesstoken,
+          },
+        })
+          .then(async (response) => {
+            const data = await response.json();
+            console.log(data);
+            gottenData = data;
+            renderSettings();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        }
+
+    </script>
+    <script src="./res/profile.js"></script>
+  </body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="sidebar" id="sidebar">
+          
+        </div>
+        <div class="app-content">
+          <div class="app-content-header">
+            <div class="menu-bars">
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+            </div>
+            <h1 class="app-content-headerText">Search A Student</h1>
+            <button class="mode-switch" title="Switch Theme">
+              <svg
+                class="moon"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <defs></defs>
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+              </svg>
+            </button>
+            <button class="btn btn-danger" onclick="logOut()">Log out</button>
+          </div>
+  
+          <div id="announcements">
+        
+        <div>
+            Search: <input type="text" id="search" class="mr-4">
+            Search By: <select id="searchBy" class="p-1">
+                <option value="email">Email or Admission Number</option>
+                <option value="firstandsurname">First name and Surname</option>
+            </select>
+            <button id="search-button" class="btn btn-primary mx-4">Search</button>
+        </div>
+    
+        <div id="show-search-result">
+    
+        </div>
+          </div>
+        </div>
+      </div>
+
+    
+    
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script>
+        // const byID = (id) => document.getElementById(id);
+        const search = byID("search");
+        const searchBy = byID("searchBy");
+        const searchButton = byID("search-button");
+        const showSearchResult = byID("show-search-result");
+
+        let searchValues;
+
+        function capitalizeString(str) {
+    return str[0].toUpperCase() + str.slice(1);
+  }
+
+        searchButton.addEventListener('click', function() {
+            if(searchBy.value == "email") {
+
+                fetch(baseUrl + "admin/search-by-email-or-reg-number/" + search.value, {
+                    method: "GET",
+                    headers: {
+                        accesstoken
+                    }
+                })
+                .then(async (response) => {
+                    const data = await response.json();
+                    console.log(data);
+                    if(response.status == 200) {
+                        searchValues = data;
+                        renderSearch(data.searchResult);
+                    }
+                })
+                .catch(e => {
+                    renderSearch("error");
+                });
+
+            } else if (searchBy.value == "firstandsurname") {
+
+                const fullName = search.value.split(" ");
+
+                fetch(`${baseUrl}admin/search-student/${fullName[0]}/${fullName[1]}`, {
+                    method: "GET",
+                    headers: {
+                        accesstoken
+                    }
+                })
+                .then(async (response) => {
+                    const data = await response.json();
+                    if(response.status == 200) {
+                        searchValues = data;
+                        renderSearch(data.searchResult);
+                    }
+                })
+                .catch(e => {
+                    console.log(e);
+                    renderSearch("error");
+                    notify({
+                        message: "Something went wrong.",
+                        color: "danger",
+                        timeout: 3000
+                    });
+                });
+            }
+        });
+
+        function renderSearch(searchList) {
+            showSearchResult.innerHTML = "";
+            if(searchList.length == 0) {
+                showSearchResult.innerHTML = 'No Student';
+            } else if (searchList == "error") {
+                showSearchResult.innerHTML = 'Error';
+            } else {
+                for(let student of searchList) {
+                    showSearchResult.innerHTML += `
+                        <div style="padding: 20px; display: flex; justify-content: space-evenly; align-items: center; font-size:20px; border-bottom: 1px solid #ebebeb;">
+                            <div>${capitalizeString(student.surName)}, ${capitalizeString(student.firstName)} ${capitalizeString(student.otherNames)}</div>
+                            <div>${capitalizeString(student.gender)}</div>
+                            <div>${capitalizeString(student.studentClass)}</div>
+                            <button class="btn btn-primary" onclick="view('${student._id}')">View</button>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        function view(id) {
+            location.assign("/admin/view-student.html?id=" + id);
+        }
+
+    </script>
+</body>
+</html>

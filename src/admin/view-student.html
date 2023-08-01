@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="sidebar" id="sidebar">
+          
+        </div>
+        <div class="app-content">
+          <div class="app-content-header">
+            <div class="menu-bars">
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+            </div>
+            <h1 class="app-content-headerText">Recent Announcements</h1>
+            <button class="mode-switch" title="Switch Theme">
+              <svg
+                class="moon"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <defs></defs>
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+              </svg>
+            </button>
+            <button class="btn btn-danger" onclick="logOut()">Log out</button>
+          </div>
+  
+          <div id="student-details">
+
+        </div>
+        </div>
+      </div>
+
+    
+
+    
+    
+
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script>
+        const studentID = location.search.slice(1).split("=")[1];
+
+        // const byID = (id) => document.getElementById(id);
+
+        const studentDetailsDiv = byID("student-details");
+        
+        (async function loadSpecificStudent() {
+            try {
+                const studentDetails = await fetch(`${baseUrl}admin/student/${studentID}`, {
+                    method: "GET",
+                    headers: {
+                        accesstoken
+                    }
+                });
+
+            const student = await studentDetails.json();
+
+            if(studentDetails.status == 200) {
+                studentDetailsDiv.innerHTML = `
+                    <div>
+                        <div>${student.studentDetails.surName}, ${student.studentDetails.firstName} ${student.studentDetails.otherNames}</div>
+                        <div>${student.studentDetails.gender}</div>
+                        <div>${student.studentDetails.email}</div>
+                        <div>${student.studentDetails.studentClass}</div>
+                        <div>${student.studentDetails.stateOfOrigin}</div><br>
+                        <div>Parent's detail</div>
+                        <div>${student.studentDetails.parentName}</div>
+                        <div>${student.studentDetails.parentPhone}</div>
+                        <div>${student.studentDetails.parentEmail}</div>
+                        <button class="btn btn-primary" onclick="editDetails('${student.studentDetails._id}')">Edit Details</button>
+                        <button class="btn btn-primary" onclick="viewReceipts('${student.studentDetails._id}')">Student's Receipts</button>
+                        <!-- <button class="btn btn-primary" onclick="resultRemarks('${student.studentDetails._id}')">Result Remarks</button> -->
+                    </div>
+                    `;
+                
+            }
+            
+            } catch (error) {
+                // alert("An error occurred");
+                notify({
+                  message: "Something went wrong.",
+                  color: "danger",
+                  timeout: 3000
+                });
+            }
+        })();
+
+        function viewReceipts(id) {
+            location.assign("/admin/view-receipts.html?id=" + id);
+        }
+
+        function editDetails(id) {
+            location.assign("/admin/edit-details.html?id=" + id);
+        }
+
+        function resultRemarks(id) {
+            location.assign("/admin/result-remarks.html?id=" + id);
+        }
+    </script>
+</body>
+</html>

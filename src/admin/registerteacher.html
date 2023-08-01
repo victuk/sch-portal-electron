@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./res/style.css" />
+    <link rel="stylesheet" href="../resources/js/notification/notify.min.css" />
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css" />
+    <title>Admin</title>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="sidebar" id="sidebar">
+          
+        </div>
+        <div class="app-content">
+          <div class="app-content-header">
+            <div class="menu-bars">
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+              <div class="menu-bar"></div>
+            </div>
+            <h1 class="app-content-headerText">Recent Announcements</h1>
+            <button class="mode-switch" title="Switch Theme">
+              <svg
+                class="moon"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <defs></defs>
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+              </svg>
+            </button>
+            <button class="btn btn-danger" onclick="logOut()">Log out</button>
+          </div>
+  
+          <div id="announcements" class="my-2 pt-4">
+
+            <div class="container">
+              <h2 class="mx-4">New Teacher's form</h2>
+                <div class="row mx-2 my-4">
+
+                  <div class="col col-12 col-md-6 py-2">
+                    <div class="my-4">
+                      Surname:
+                      <input type="text" class="form-control" id="sur-name" placeholder="Surname" />
+                    </div>
+      
+                    <div class="my-4">
+                      First Name:
+                      <input type="text" id="first-name" class="form-control" placeholder="First Name" />
+                    </div>
+      
+                    <div class="my-4">
+                      Other Names:
+                      <input type="text" id="other-names" class="form-control" placeholder="Other Names" />
+                    </div>
+      
+                    <div class="my-4">
+                      Email: <input type="text" id="email" class="form-control" placeholder="Email" />
+                    </div>
+
+                    <div class="my-4">
+                      Gender:
+                      <select id="gender" class="form-control">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option></select
+                      >
+                    </div>
+                  </div>
+
+                    
+      
+                    <div class="col col-12 col-md-6 py-2">
+                      <div class="my-4">
+                        Password:
+                        <input type="password" id="password" class="form-control" placeholder="Password" />
+                      </div>
+      
+                      <div class="my-4">
+                        State of Origin: <input type="text" class="form-control" id="state-of-origin" placeholder="State Of Origin" />
+                      </div>
+                      
+                      <div class="my-4">
+                        Phone Number:
+                        <input type="text" class="form-control" id="phone-number" placeholder="Phone Number" />
+                      </div>
+      
+                      <div class="my-4">
+                        Local Government of Origin:
+                        <input type="text" class="form-control" id="local-govt-of-origin" placeholder="Local Government of Origin" />
+                      </div>
+
+                      <div class="my-4">
+                        Passport: <input type="file" id="picture" class="form-control" />
+                      </div>
+                    </div>
+
+                    <div class="col col-12 col-md-6 py-2">
+                      Class Teacher of:
+                      <select name="class" id="class" class="my-2 form-control">
+                        <option value="select">-- Choose class --</option>
+                        <option value="js1">JS 1</option>
+                        <option value="js2">JS 2</option>
+                        <option value="js3">JS 3</option>
+                        <option value="ss1">SS 1</option>
+                        <option value="ss2">SS 2</option>
+                        <option value="ss3">SS 3</option>
+                        <option value="N/A">No class</option>
+                      </select><br />
+                      <h4>Subjects and classes to teach</h4>
+                      <div id="subject-classes-to-teach">
+
+                      </div>
+                    </div>
+
+                    <div class="col col-12 col-md-6 py-2">
+                      
+                      
+
+                      <div>
+                        <div>Add subjects this teacher should teach</div>
+                        Class:
+                      <select name="class-to-teach" id="class-to-teach" class="my-2 form-control">
+                          <option value="select">-- Choose class --</option>
+                          <option value="js1">JS 1</option>
+                          <option value="js2">JS 2</option>
+                          <option value="js3">JS 3</option>
+                          <option value="ss1">SS 1</option>
+                          <option value="ss2">SS 2</option>
+                          <option value="ss3">SS 3</option>
+                        </select
+                      ><br />
+                      <div class="my-2">
+                        Subject:
+                        <input type="text" id="subject-to-teach" class="form-control" placeholder="Subject to teach" />
+                      </div>
+                      <button class="btn btn-primary" id="add-teachers-class-subject">Add Subject</button>
+                    </div>
+                      </div>
+                  </div> 
+                    </div>
+      
+                    <div style="width: 100%; text-align: center" class="my-5">
+                      <button id="submit-form" class="btn btn-primary">Register</button>
+                    </div>
+                  </div>
+            </div>
+        
+          </div>
+        </div>
+      </div>
+
+    <style>
+      .show-well {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .s-summary {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      @media screen and (max-width: 600px) {
+        .show-well {
+          flex-direction: column;
+        }
+      }
+    </style>
+
+    <script src="../scripts/baseUrl.js"></script>
+    <script src="../scripts/cloudinaryAction.js"></script>
+    <script src="./res/sidebar.js"></script>
+    <script src="./res/script.js"></script>
+    <script src="../resources/js/notification/notify.min.js"></script>
+    <script src="../scripts/moment.min.js"></script>
+    <script>
+
+        function capitalizeString(str) {
+          return str[0].toUpperCase() + str.slice(1);
+        }
+
+        const subjectToTeach =  byID("subject-to-teach");
+        const classToTeach =  byID("class-to-teach");
+        const addTCSButton = byID("add-teachers-class-subject");
+        let showAddedSubjectClass = byID("subject-classes-to-teach");
+        const submitForm = byID("submit-form");
+
+        const surName = byID("sur-name");
+        const firstName = byID("first-name");
+        const otherNames = byID("other-names");
+        const email = byID("email");
+        const gender = byID("gender");
+        const password = byID("password");
+        const stateOfOrigin = byID("state-of-origin");
+        const phoneNumber = byID("phone-number");
+        const localGovtOfOrigin = byID("local-govt-of-origin");
+        const picture = byID("picture");
+        const classTeacherOf = byID("class");
+
+        let classSubjectValue = [];
+
+        
+        addTCSButton.addEventListener("click", function() {
+          if(classToTeach.value == "select" || subjectToTeach.value == "") {
+            notify({
+              message: "Input class and subject value",
+              color: "danger",
+              timeout: 3000
+            });
+          } else {
+            let subjectCode = subjectToTeach.value.toLowerCase().split(" ").join("-");
+            classSubjectValue.push({
+              subjectName: subjectToTeach.value,
+              subjectCode,
+              subjectClass: classToTeach.value 
+            });
+            renderClassSubjectList();
+          }
+        });
+
+        function renderClassSubjectList() {
+          showAddedSubjectClass.innerHTML = "";
+          for (tcs of classSubjectValue) {
+            showAddedSubjectClass.innerHTML += `
+              <div class="my-2">
+                ${tcs.subjectName} - ${tcs.subjectClass.toUpperCase()} <button onclick="deleteSubjectClass('${tcs.subjectCode}', '${tcs.subjectClass}')" class="btn btn-primary">Delete</button>
+              </div>
+            `;
+          }
+        }
+
+        function deleteSubjectClass(subjectCode, subjectClass) {
+          classSubjectValue = classSubjectValue.filter(val => {
+            console.log(val);
+            return val.subjectCode != subjectCode || val.subjectClass != subjectClass;
+          });
+          renderClassSubjectList();
+        }
+        
+        submitForm.addEventListener("click", function() {
+
+          uploadImage(picture.files[0])
+          .then((cloudinaryRes) => {
+            fetch(baseUrl + "auth/register/teacher", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              accesstoken
+            },
+            body: JSON.stringify({
+              firstName: firstName.value,
+              surName: surName.value,
+              otherNames: otherNames.value,
+              gender: gender.value,
+              passportPicture: cloudinaryRes.secure_url,
+              passportPublicId: cloudinaryRes.public_id,
+              email: email.value,
+              stateOfOrigin: stateOfOrigin.value,
+              classTeacherOf: classTeacherOf.value,
+              localGovernmentOfOrigin: localGovtOfOrigin.value,
+              subjectsClass: classSubjectValue,
+              phoneNumber: phoneNumber.value,
+              password: password.value
+            })
+          })
+          .then(async (response) => {
+            const data = await response.json();
+
+            console.log(response.status);
+            console.log(data);
+
+            if(response.status == 201) {
+              notify({
+                  message: "Tacher Registration Successful!.",
+                  color: "success",
+                  timeout: 3000
+                });
+            }
+
+          })
+          .catch();
+          }).catch((err) => {
+            console.log(err);
+          });
+        });
+
+    </script>
+    <script src="./res/profile.js"></script>
+</body>
+</html>

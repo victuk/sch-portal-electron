@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="resources/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="resources/css/alertify.min.css">
+    <title>Login</title>
+  </head>
+  <body>
+    <div id="display-properly">
+      <h1 style="color: white" class="left-section">Login form</h1>
+      <div>
+        <form id="login-form">
+          <div
+            style="
+              display: block;
+              text-align: center;
+              font-weight: bold;
+              font-size: 25px;
+            "
+          >
+            Login
+          </div>
+          <br />
+          <div><input type="text" id="email" placeholder="Enter Email" /></div>
+          <br />
+          <div>
+            <input type="password" id="password" placeholder="Enter Password" />
+          </div>
+          <br />
+          <button id="submit" class="btn btn-primary">Login</button>
+          <div class="my-2" style="text-align: center">
+            <small><a href="forgot-password.html">Forgot Password?</a></small>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <h1 id="back-home">
+      <a href="index.html" style="color: white; text-decoration: none">ALICE HIGH SCHOOL.</a>
+    </h1>
+
+    <style>
+      #display-properly {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 20px 50px;
+        align-items: center;
+      }
+
+      .left-section {
+        display: block;
+        /* position: absolute; */
+        top: 10px;
+        left: 100px;
+      }
+
+      body {
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-image: linear-gradient(
+            rgba(0, 0, 0, 0.5),
+            rgba(0, 0, 0, 0.5)
+          ),
+          url("resources/images/happy-students-1.jpg");
+        height: 100vh;
+      }
+
+      #login-form {
+        background-color: white;
+        width: 400px;
+      }
+
+      form {
+        padding: 30px;
+        border-radius: 20px;
+      }
+
+      #email,
+      #password {
+        padding: 5px 0;
+        margin: 10px 0;
+        width: 100%;
+        border: none;
+        border-bottom: 2px solid blue;
+      }
+
+      #email:focus,
+      #password:focus {
+        outline: none;
+      }
+
+      #submit {
+        width: 100%;
+        color: white;
+        background-color: rgb(53, 53, 184);
+        border: none;
+        padding: 10px;
+        border-radius: 10px;
+      }
+
+      #back-home {
+        position: absolute;
+        top: 20px;
+        left: 50px;
+      }
+
+      @media screen and (max-width: 768px) {
+        .left-section {
+          display: none;
+        }
+
+        #login-form {
+          background-color: white;
+          width: 100%;
+        }
+
+        #display-properly {
+          margin: auto;
+        }
+      }
+    </style>
+
+    <script src="./scripts/baseUrl.js"></script>
+    <script src="./resources/js/alertify.min.js"></script>
+    <script>
+      const email = document.getElementById("email");
+      const password = document.getElementById("password");
+      const submit = document.getElementById("submit");
+
+      submit.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        fetch(baseUrl + "auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email.value,
+            password: password.value,
+          }),
+        })
+          .then(async (res) => {
+            const data = await res.json();
+            console.log(data);
+
+            if(res.status == 400) {
+              alert(data.message);
+              return;
+            }
+
+            localStorage.setItem("accesstoken", data.accesstoken);
+            localStorage.setItem("role", data.userRole);
+
+            if (data.userRole == "admin") {
+              location.replace("admin/index.html");
+            } else if (data.userRole == "student") {
+              location.replace("student/index.html");
+            } else if (data.userRole == "teacher") {
+              location.replace("teacher/index.html");
+            } else if (data.userRole == "recordkeeper") {
+              location.replace("recordkeeper/index.html");
+            } else {
+              alertify.error(data.message);
+            }
+          })
+          .catch((e) => {
+            // alertify.alert(e.response.data.message);
+            console.log(e);
+          });
+      });
+    </script>
+  </body>
+</html>
