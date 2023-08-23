@@ -10,7 +10,6 @@
     <title>Document</title>
   </head>
   <body>
-
     <div class="app-container">
       <div class="sidebar">
         <div class="sidebar-header">
@@ -23,75 +22,10 @@
             </svg>
           </div>
         </div>
-        <ul class="sidebar-list">
-          <li class="sidebar-list-item home">
-            <a href="./index.html">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-home"
-              >
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-              <span>Home</span>
-            </a>
-          </li>
-          <li class="sidebar-list-item pay-school-fee">
-            <a href="./class-position.html">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-shopping-bag"
-              >
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 0 1-8 0" />
-              </svg>
-              <span>Fill Class Result</span>
-            </a>
-          </li>
-          <li class="sidebar-list-item check-result">
-            <a href="./loadresult.html">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-pie-chart"
-              >
-                <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-                <path d="M22 12A10 10 0 0 0 12 2v10z" />
-              </svg>
-              <span>Fill Subject Scores</span>
-            </a>
-          </li>
-        </ul>
+        <ul class="sidebar-list"></ul>
         <div class="account-info">
           <div class="account-info-picture">
-            <img
-              id="image-src"
-              alt="Profile picture"
-            />
+            <img id="image-src" alt="Profile picture" />
           </div>
           <div class="account-info-name" id="person-name"></div>
           <button class="account-info-more">
@@ -122,7 +56,7 @@
             <div class="menu-bar"></div>
             <div class="menu-bar"></div>
           </div>
-          <h1 class="app-content-headerText">Recent Announcements</h1>
+          <h1 class="app-content-headerText">Assessment Manager</h1>
           <button class="mode-switch" title="Switch Theme">
             <svg
               class="moon"
@@ -142,20 +76,49 @@
           <button class="btn btn-danger" onclick="logOut()">Log out</button>
         </div>
 
+        <style>
+          .flex-it {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+          }
+
+          .flex-it > div {
+            display: flex;
+            /* align-items: center; */
+            flex-direction: column;
+            gap: 5px;
+          }
+
+          @media screen and (max-width: 1024px) {
+            .flex-it {
+              flex-direction: column;
+              align-items: start;
+            }
+
+            .flex-it > div {
+              flex-direction: column;
+              align-items: start;
+            }
+          }
+
+        </style>
+
         <div id="l-res">
           <div>
-          <form class="my-4">
-            Term:
-            <select name="term" id="term">
-              <option value="select">-- Choose term --</option>
-              <option value="first-term">First term</option>
-              <option value="second-term">Second term</option>
-              <option value="third-term">Third term</option>
-            </select>
-            <br />
-            <br />
-      
-            <!-- Class:
+            <form class="my-4 flex-it">
+              <div>
+                <div>Term:</div>
+              <select name="term" id="term">
+                <option value="select">-- Choose term --</option>
+                <option value="first-term">First term</option>
+                <option value="second-term">Second term</option>
+                <option value="third-term">Third term</option>
+              </select>
+              </div>
+              
+
+              <!-- Class:
             <select name="class" id="class">
               <option value="select">-- Choose class --</option>
               <option value="js1">JS 1</option>
@@ -167,42 +130,45 @@
             </select>
             <br />
             <br /> -->
-      
-            Year:
-            <select name="year" id="year"></select>
-            <br />
-            <br />
-      
-            Subject(s):
-            <select name="subjects" id="subjects">
-              <option value="select">-- Choose Subject --</option>
-            </select>
-            <br />
-            <br />
-      
-            <button id="load-result" class="btn btn-primary">Load Result</button>
-          </form>
-      
-          <div>
-            <table id="table-data" class="paleBlueRows">
-              <thead>
-              <tr>
-                <th>Surname</th>
-                <th>First Name</th>
-                <th>Other Names</th>
-                <th>Gender</th>
-                <th>First Test</th>
-                <th>Second Test</th>
-                <th>Third Test</th>
-                <th>Exam Score</th>
-                <th>Total</th>
-                <th>Grade</th>
-                <th>Remark</th>
-                <th>Update Button</th>
-              </tr>
-            </thead>
-            </table>
-          </div>
+              <div>
+                <div>Year:</div>
+                <select name="year" id="year"></select>
+              </div>
+
+              <div>
+                <div>Subject(s):</div>
+                <select name="subjects" id="subjects">
+                  <option value="select">-- Choose Subject --</option>
+                </select>
+              </div>
+            </form>
+
+            <div>
+              <button id="load-result" class="button-design">
+                Load Result
+              </button>
+            </div>
+
+            <div>
+              <table id="table-data" class="paleBlueRows">
+                <thead>
+                  <tr>
+                    <th colspan="6">Choose a term, year and subject.</th>
+                    <!-- <th>Surname</th>
+                    <th>Other Names</th>
+                    <th>Gender</th>
+                    <th>First Test</th>
+                    <th>Second Test</th>
+                    <th>Third Test</th>
+                    <th>Exam Score</th>
+                    <th>Total</th>
+                    <th>Grade</th>
+                    <th>Remark</th>
+                    <th>Update Button</th> -->
+                  </tr>
+                </thead>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -210,9 +176,13 @@
 
     <style>
       select {
-        padding: 10px;
+        padding: 6px 20px;
+        border:	1px solid rgba(0,0,0,0.1);
+        border-radius:	4px;
+        background-color: white;
+        border-radius: 3px;
       }
-  
+
       #l-res {
         padding: 40px 0;
         overflow: auto;
@@ -220,57 +190,75 @@
         max-height: 100%;
       }
 
+      .button-design {
+        border-radius: 3px;
+        border: 1px solid #24c464;
+        color: #24c464;
+        padding: 6px 10px;
+        background-color: white;
+        transition: 0.5s;
+      }
+      
+      .button-design:hover {
+        background-color: #24c464;
+        color: white;
+      }
+
       .score {
         width: 40px;
+        /* border: 2px solid blue; */
         border: none;
-        border-bottom: 2px solid blue;
+        padding: 4px 10px;
+        border-radius: 4px;
+        background-color: #5af397;
       }
-  
+
       table.paleBlueRows {
-    font-family: "Times New Roman", Times, serif;
-    border: 1px solid #FFFFFF;
-    width: 100%;
-    height: 100px;
-    text-align: center;
-    border-collapse: collapse;
-  }
-  table.paleBlueRows td, table.paleBlueRows th {
-    border: 1px solid #FFFFFF;
-    padding: 3px 2px;
-  }
-  table.paleBlueRows tbody tr {
-    font-size: 13px;
-  }
-  table.paleBlueRows tr:nth-child(even) {
-    background: #D0E4F5;
-  }
-  table.paleBlueRows thead {
-    background: #0B6FA4;
-    border-bottom: 5px solid #FFFFFF;
-  }
-  table.paleBlueRows thead th {
-    font-size: 17px;
-    font-weight: bold;
-    color: #FFFFFF;
-    text-align: center;
-    border-left: 2px solid #FFFFFF;
-  }
-  table.paleBlueRows thead th:first-child {
-    border-left: none;
-  }
-  
-  table.paleBlueRows tfoot {
-    font-size: 14px;
-    font-weight: bold;
-    color: #333333;
-    background: #D0E4F5;
-    border-top: 3px solid #444444;
-  }
-  table.paleBlueRows tfoot td {
-    font-size: 14px;
-  }
+        font-family: "Times New Roman", Times, serif;
+        border: 1px solid #ffffff;
+        width: 100%;
+        height: 50px;
+        text-align: center;
+        border-collapse: collapse;
+      }
+      table.paleBlueRows td,
+      table.paleBlueRows th {
+        border: 1px solid #ffffff;
+        padding: 10px 2px;
+      }
+      /* table.paleBlueRows tbody tr {
+        font-size: 13px;
+      } */
+      table.paleBlueRows tr:nth-child(even) {
+        background: #d0e4f5;
+      }
+      table.paleBlueRows thead {
+        /* background: #0b6fa4; */
+        border-bottom: 5px solid #ffffff;
+      }
+      table.paleBlueRows thead th {
+        font-size: 17px;
+        font-weight: bold;
+        color: black;
+        text-align: center;
+      }
+      table.paleBlueRows thead th:first-child {
+        border-left: none;
+      }
+
+      table.paleBlueRows tfoot {
+        font-size: 14px;
+        font-weight: bold;
+        color: #333333;
+        background: #d0e4f5;
+        border-top: 3px solid #444444;
+      }
+      table.paleBlueRows tfoot td {
+        font-size: 14px;
+      }
     </style>
 
+    <script src="./res/sidebar.js"></script>
     <script src="../scripts/baseUrl.js"></script>
     <script src="./res/script.js"></script>
     <script src="../resources/js/notification/notify.min.js"></script>
@@ -368,17 +356,17 @@
             tableData.innerHTML = `
           <thead>
             <tr>
-          <th>Surname</th>
           <th>First Name</th>
-          <th>Other Names</th>
-          <th>Gender</th>
+          <th>Surname</th>
+          <!-- <th>Other Names</th> -->
+          <!-- <th>Gender</th> -->
           <th>First Test</th>
           <th>Second Test</th>
           <th>Third Test</th>
           <th>Exam Score</th>
           <th>Total</th>
           <th>Grade</th>
-          <th>Remark</th>
+          <!-- <th>Remark</th> -->
           <th>Update Button</th>
         </tr>
       </thead>
@@ -388,18 +376,30 @@
             for (let r of allResults) {
               tableData.innerHTML += `
               <tr>
-          <td>${r.surName[0].toUpperCase() + r.surName.slice(1)}</td>
           <td>${r.firstName[0].toUpperCase() + r.firstName.slice(1)}</td>
-          <td>${r.otherNames[0].toUpperCase() + r.otherNames.slice(1)}</td>
-          <td>${r.gender[0].toUpperCase() + r.gender.slice(1)}</td>
-          <td><input type="text" class="score" id="${r.studentID}-testone" value="${r.testOne}"></td>
-          <td><input type="text" class="score" id="${r.studentID}-testtwo" value="${r.testTwo}"></td>
-          <td><input type="text" class="score" id="${r.studentID}-testthree" value="${r.testThree}"></td>
-          <td><input type="text" class="score" id="${r.studentID}-exam" value="${r.examScore}"></td>
-          <td>${r.total}</td>
+          <td>${r.surName[0].toUpperCase() + r.surName.slice(1)}</td>
+          <!-- <td>${r.otherNames[0].toUpperCase() + r.otherNames.slice(1)}</td> -->
+          <!-- <td>${r.gender[0].toUpperCase() + r.gender.slice(1)}</td> -->
+          <td><input type="text" class="score" id="${
+            r.studentID
+          }-testone" value="${r.testOne}">/10</td>
+          <td><input type="text" class="score" id="${
+            r.studentID
+          }-testtwo" value="${r.testTwo}">/10</td>
+          <td><input type="text" class="score" id="${
+            r.studentID
+          }-testthree" value="${r.testThree}">/10</td>
+          <td><input type="text" class="score" id="${
+            r.studentID
+          }-exam" value="${r.examScore}">/70</td>
+          <td>${r.total}/100</td>
           <td>${r.grade}</td>
-          <td>${r.remark}</td>
-          <td><button class="btn btn-success" onclick="updateScore('${r.studentID}', '${r.mode}', '${r.studentClass}', '${r.term}', '${r.year}', '${r.subject}')">Update Score</button></td>
+          <!-- <td>${r.remark}</td> -->
+          <td><button class="btn btn-link" onclick="updateScore('${
+            r.studentID
+          }', '${r.mode}', '${r.studentClass}', '${r.term}', '${r.year}', '${
+                r.subject
+              }')">Update</button></td>
               </tr>
               `;
             }
@@ -453,10 +453,10 @@
           // });
 
           notify({
-                      message: "Update Successful.",
-                      color: "success",
-                      timeout: 2000
-                    });
+            message: "Update Successful.",
+            color: "success",
+            timeout: 2000,
+          });
 
           for (let result of allResults) {
             if (result.studentID == data.resultResponse.studentID) {
@@ -492,7 +492,7 @@
           <th>Total</th>
           <th>Grade</th>
           <th>Remark</th>
-          <th>Update Button</th>
+          <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -507,14 +507,26 @@
           <td>${r.firstName[0].toUpperCase() + r.firstName.slice(1)}</td>
           <td>${r.otherNames[0].toUpperCase() + r.otherNames.slice(1)}</td>
           <td>${r.gender[0].toUpperCase() + r.gender.slice(1)}</td>
-          <td><input type="text" class="score" id="${r.studentID}-testone" value="${r.testOne}"></td>
-          <td><input type="text" class="score" id="${r.studentID}-testtwo" value="${r.testTwo}"></td>
-          <td><input type="text" class="score" id="${r.studentID}-testthree" value="${r.testThree}"></td>
-          <td><input type="text" class="score" id="${r.studentID}-exam" value="${r.examScore}"></td>
+          <td><input type="text" class="score" id="${
+            r.studentID
+          }-testone" value="${r.testOne}"></td>
+          <td><input type="text" class="score" id="${
+            r.studentID
+          }-testtwo" value="${r.testTwo}"></td>
+          <td><input type="text" class="score" id="${
+            r.studentID
+          }-testthree" value="${r.testThree}"></td>
+          <td><input type="text" class="score" id="${
+            r.studentID
+          }-exam" value="${r.examScore}"></td>
           <td>${r.total}</td>
           <td>${r.grade}</td>
           <td>${r.remark}</td>
-          <td><button class="btn btn-success" onclick="updateScore('${r.studentID}', '${r.mode}', '${r.studentClass}', '${r.term}', '${r.year}', '${r.subject}')">Update Score</button></td>
+          <td><button class="btn btn-success" onclick="updateScore('${
+            r.studentID
+          }', '${r.mode}', '${r.studentClass}', '${r.term}', '${r.year}', '${
+              r.subject
+            }')">Update Score</button></td>
               </tr>
               `;
           }
@@ -522,10 +534,10 @@
           calculateAverage();
         } else {
           notify({
-                      message: "Coudn't update score.",
-                      color: "danger",
-                      timeout: 2000
-                    });
+            message: "Coudn't update score.",
+            color: "danger",
+            timeout: 2000,
+          });
         }
       }
 
@@ -534,7 +546,7 @@
         for (let i = 0; i < allResults.length; i++) {
           avg += allResults[i].total;
         }
-        let averageScore = avg/allResults.length;
+        let averageScore = avg / allResults.length;
         console.log(averageScore);
       }
     </script>

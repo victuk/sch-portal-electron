@@ -22,69 +22,7 @@
             </svg>
           </div>
         </div>
-        <ul class="sidebar-list">
-          <li class="sidebar-list-item home">
-            <a href="./index.html">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-home"
-              >
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-              <span>Home</span>
-            </a>
-          </li>
-          <li class="sidebar-list-item pay-school-fee">
-            <a href="./class-position.html">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-shopping-bag"
-              >
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 0 1-8 0" />
-              </svg>
-              <span>Fill Class Result</span>
-            </a>
-          </li>
-          <li class="sidebar-list-item check-result">
-            <a href="./loadresult.html">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-pie-chart"
-              >
-                <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-                <path d="M22 12A10 10 0 0 0 12 2v10z" />
-              </svg>
-              <span>Fill Subject Scores</span>
-            </a>
-          </li>
-        </ul>
+        <ul class="sidebar-list"></ul>
         <div class="account-info">
           <div class="account-info-picture">
             <img id="image-src" alt="Profile picture" />
@@ -118,7 +56,7 @@
             <div class="menu-bar"></div>
             <div class="menu-bar"></div>
           </div>
-          <h1 class="app-content-headerText">Recent Announcements</h1>
+          <h1 class="app-content-headerText">Class Student's Result</h1>
           <button class="mode-switch" title="Switch Theme">
             <svg
               class="moon"
@@ -140,14 +78,21 @@
 
         <div id="class-position-div">
           <div>
-            <div>
-              <div id="global-term"></div>
-              <div id="global-session"></div>
+            <div class="result-header-two">
+              <div>
+                <div id="global-term"></div>
+                <div id="global-session"></div>
+              </div>
             </div>
+
+            <!-- <div class="py-2" style="text-align: center;">
+              <button class="btn btn-primary" id="refresh-result">Refresh Result</button>
+            </div> -->
+            
             <table id="student-positions" class="paleBlueRows">
                 <thead>
-              <tr>
-                <th>Full Name (Surname, First name, other Names)</th>
+              <tr class="design-table-row">
+                <th colspan="3">Full Name</th>
                 <th>Gender</th>
                 <th>Position</th>
               </tr>
@@ -166,6 +111,17 @@
         input {
             padding: 5px;
         }
+
+        .result-header-two {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .result-header-two > div {
+          display: flex;
+          gap: 40px;
+        }
     
         #show-result {
           padding: 40px 0;
@@ -177,38 +133,53 @@
             height: 100%;
             overflow-y: auto;
         }
+
+        .design-table-row {
+          box-shadow: 	0px 3px 3px 0px rgba(0,0,0,0.12),
+              0px 3px 6px 0px rgba(0,0,0,0.22);
+          /* border:	1px solid rgba(0,0,0,0.03); */
+          border-radius:	6px;
+                  }
     
         table.paleBlueRows {
       font-family: "Times New Roman", Times, serif;
       border: 1px solid #FFFFFF;
       width: 100%;
       height: 100px;
-      text-align: center;
+      /* text-align: center; */
       border-collapse: collapse;
+      margin-top: 40px;
+      padding: 0 20px;
     }
     table.paleBlueRows td, table.paleBlueRows th {
       border: 1px solid #FFFFFF;
-      padding: 3px 2px;
+      padding: 20px;
     }
-    table.paleBlueRows tbody tr {
+    /* table.paleBlueRows tbody tr {
       font-size: 13px;
-    }
+    } */
     table.paleBlueRows tr:nth-child(even) {
       background: #D0E4F5;
     }
     table.paleBlueRows thead {
-      background: #0B6FA4;
+      /* background: #0B6FA4; */
       border-bottom: 5px solid #FFFFFF;
     }
     table.paleBlueRows thead th {
       font-size: 17px;
       font-weight: bold;
-      color: #FFFFFF;
-      text-align: center;
+      color: black;
+      /* text-align: center; */
       border-left: 2px solid #FFFFFF;
+      padding: 10px 20px;
     }
     table.paleBlueRows thead th:first-child {
       border-left: none;
+    }
+    
+    .session-term {
+      font-size: 20px;
+      font-weight: bold;
     }
     
     table.paleBlueRows tfoot {
@@ -221,8 +192,15 @@
     table.paleBlueRows tfoot td {
       font-size: 14px;
     }
+
+    .table-body > td {
+      padding: 20px 0;
+      border:	1px solid rgba(0,0,0,0.6);
+      border-radius:	6px;
+    }
       </style>
 
+    <script src="./res/sidebar.js"></script>
     <script src="../scripts/baseUrl.js"></script>
     <script src="./res/script.js"></script>
     <script src="../resources/js/notification/notify.min.js"></script>
@@ -233,6 +211,25 @@
 
       const globalSessionDiv = byID("global-session");
       const globalTermDiv = byID("global-term");
+      
+      const classPositionRefresh = byID("refresh-result");
+
+      // classPositionRefresh.addEventListener("click", async () => {
+      //   const student = await fetch(baseUrl + "teacher/refresh-student-position", {
+      //     method: "GET",
+      //     headers: {
+      //       accesstoken,
+      //       "Content-Type": "application/json",
+      //       year: globalSession,
+      //       term: globalTerm,
+      //     }
+      //   });
+      //   let data = await student.json();
+      //   console.log(data);
+      //   data = data.sort(function(a, b) {
+      //     return parseInt(b.position) - parseInt(a.position);
+      //   });
+      // });
 
       
       let globalTerm;
@@ -248,19 +245,18 @@
         } else {
           studentPositions.innerHTML = `
                 <thead>
-                  <tr>
-                      <th>Full Name (Surname, First name, other Names)</th>
+                  <tr class="design-table-row">
+                      <th>Full Name</th>
                       <th>Gender</th>
                       <th>Class</th>
                       <th>Position</th>
-                      <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
               `;
           for (let position of data) {
             studentPositions.innerHTML += `
-                      <tr>
+                      <tr class="table-body">
                           <td>${capitalizeString(
                             position.surName
                           )}, ${capitalizeString(
@@ -268,14 +264,9 @@
             )} ${capitalizeString(position.otherNames)}</td>
                           <td>${capitalizeString(position.gender)}</td>
                           <td>${position.studentClass.toUpperCase()}</td>
-                          <td><input type="text" id="${
+                          <td><div id="${
                             position.studentID
-                          }" value="${position.position}"></td>
-                          <td><button onclick="updatePosition('${
-                            position.studentID
-                          }', '${position.recordID}', '${position.mode}', '${
-              position.studentClass
-            }')" class="btn btn-success">Update</button></td>
+                          }">${position.position}</div></td>
                       </tr>
                   `;
           }
@@ -318,8 +309,8 @@
                 });
             }
 
-            globalSessionDiv.innerHTML = `<div class="my-2">Session: ${globalSession}</div>`;
-            globalTermDiv.innerHTML = `<div class="my-2">Term: ${globalTerm
+            globalSessionDiv.innerHTML = `<div class="my-2 session-term">Session: ${globalSession}</div>`;
+            globalTermDiv.innerHTML = `<div class="my-2 session-term">Term: ${globalTerm
               .split("-")
               .map((word) => word[0].toUpperCase() + word.slice(1))
               .join(" ")}</div>`;

@@ -10,15 +10,26 @@
   </head>
   <body>
     <div id="display-properly">
-      <h1 style="color: white" class="left-section">Login form</h1>
+      <div class="left-section">
+        <img class="pic-control" src="./resources/images/undraw_educator_re_ju47.svg" alt="">
+      </div>
       <div>
         <form id="login-form">
+          <div style="text-align: center;">
+            <img class="logo-control" src="./resources/images/sch_logo-without-background.png" alt="">
+          </div>
+          <div style="text-align: center; display: block;
+          text-align: center;
+          font-weight: bold;
+          font-size: 25px; margin-bottom: 20px;">
+            Alice High School
+          </div>
           <div
             style="
               display: block;
               text-align: center;
               font-weight: bold;
-              font-size: 25px;
+              font-size: 15px;
             "
           >
             Login
@@ -38,9 +49,7 @@
       </div>
     </div>
 
-    <h1 id="back-home">
-      <a href="index.html" style="color: white; text-decoration: none">ALICE HIGH SCHOOL.</a>
-    </h1>
+    
 
     <style>
       #display-properly {
@@ -56,6 +65,7 @@
         /* position: absolute; */
         top: 10px;
         left: 100px;
+        color: black;
       }
 
       body {
@@ -64,12 +74,12 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        background-image: linear-gradient(
-            rgba(0, 0, 0, 0.5),
-            rgba(0, 0, 0, 0.5)
-          ),
-          url("resources/images/happy-students-1.jpg");
         height: 100vh;
+      }
+
+      .logo-control {
+        width: 100px;
+        height: 100px;
       }
 
       #login-form {
@@ -96,6 +106,11 @@
         outline: none;
       }
 
+      .pic-control {
+        width: 380px;
+        height: 380px;
+      }
+
       #submit {
         width: 100%;
         color: white;
@@ -105,11 +120,11 @@
         border-radius: 10px;
       }
 
-      #back-home {
+      /* #back-home {
         position: absolute;
         top: 20px;
         left: 50px;
-      }
+      } */
 
       @media screen and (max-width: 768px) {
         .left-section {

@@ -139,7 +139,7 @@
             <button class="btn btn-danger" onclick="logOut()">Log out</button>
           </div>
   
-          <div id="announcements">
+          <div id="announcements accordionExample" class="accordion">
             <div
               style="
                 position: absolute;
@@ -153,6 +153,7 @@
           </div>
         </div>
       </div>
+
 
       <script src="../scripts/baseUrl.js"></script>
     <script src="./res/script.js"></script>
@@ -189,15 +190,21 @@ const annRequest = {
 
   for (let a of annList) {
     announcements.innerHTML += `
-                  <div class="card" style="margin: 20px;">
-                    <div class="card-header"><h4>${
-                      a.announcementTitle
-                    }</h4></div>  
-                    <div class="card-body">${a.announcement}</div>
-                    <div class="card-footer">${moment(a.updatedAt).format(
+
+    <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              ${a.announcementTitle} (${moment(a.updatedAt).format(
                       "Do MMMM, YYYY"
-                    )}</div>
-                  </div>
+                    )})
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              ${a.announcement}
+            </div>
+          </div>
+        </div>
               `;
   }
 })();
